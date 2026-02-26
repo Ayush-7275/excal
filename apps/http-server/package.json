@@ -1,0 +1,30 @@
+{
+  "name": "http-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node ./dist/index.js",
+    "dev": "tsx watch --env-file=.env src/index.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "@repo/db": "workspace:*",
+    "@repo/schema": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "tsx": "^4.21.0"
+  },
+  "dependencies": {
+    "@types/argon2": "^0.15.4",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "argon2": "^0.44.0",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3"
+  }
+}

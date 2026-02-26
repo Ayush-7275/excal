@@ -1,0 +1,22 @@
+{
+  "name": "@repo/schema",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "exports": {
+    "./user": "./src/user.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*"
+  },
+  "dependencies": {
+    "zod": "^4.3.6"
+  }
+}

@@ -133,3 +133,107 @@ Learn more about the power of Turborepo:
 - [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
 - [Configuration Options](https://turborepo.dev/docs/reference/configuration)
 - [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
+
+```
+excal
+├─ .npmrc
+├─ apps
+│  ├─ http-server
+│  │  ├─ package.json
+│  │  ├─ src
+│  │  │  ├─ index.ts
+│  │  │  ├─ middleware.ts
+│  │  │  └─ types
+│  │  │     └─ express.d.ts
+│  │  └─ tsconfig.json
+│  ├─ web
+│  │  ├─ app
+│  │  │  ├─ favicon.ico
+│  │  │  ├─ fonts
+│  │  │  │  ├─ GeistMonoVF.woff
+│  │  │  │  └─ GeistVF.woff
+│  │  │  ├─ globals.css
+│  │  │  ├─ layout.tsx
+│  │  │  ├─ page.module.css
+│  │  │  └─ page.tsx
+│  │  ├─ eslint.config.js
+│  │  ├─ next-env.d.ts
+│  │  ├─ next.config.js
+│  │  ├─ package.json
+│  │  ├─ public
+│  │  │  ├─ file-text.svg
+│  │  │  ├─ globe.svg
+│  │  │  ├─ next.svg
+│  │  │  ├─ turborepo-dark.svg
+│  │  │  ├─ turborepo-light.svg
+│  │  │  ├─ vercel.svg
+│  │  │  └─ window.svg
+│  │  ├─ README.md
+│  │  └─ tsconfig.json
+│  └─ ws-server
+│     ├─ package.json
+│     ├─ src
+│     │  └─ index.ts
+│     └─ tsconfig.json
+├─ package.json
+├─ packages
+│  ├─ db
+│  │  ├─ package.json
+│  │  ├─ prisma
+│  │  │  ├─ migrations
+│  │  │  │  ├─ 20260223165204_init_schema
+│  │  │  │  │  └─ migration.sql
+│  │  │  │  ├─ 20260223171942_unique_email
+│  │  │  │  │  └─ migration.sql
+│  │  │  │  └─ migration_lock.toml
+│  │  │  └─ schema.prisma
+│  │  ├─ prisma.config.ts
+│  │  ├─ src
+│  │  │  ├─ generated
+│  │  │  │  └─ prisma
+│  │  │  │     ├─ browser.ts
+│  │  │  │     ├─ client.ts
+│  │  │  │     ├─ commonInputTypes.ts
+│  │  │  │     ├─ enums.ts
+│  │  │  │     ├─ internal
+│  │  │  │     │  ├─ class.ts
+│  │  │  │     │  ├─ prismaNamespace.ts
+│  │  │  │     │  └─ prismaNamespaceBrowser.ts
+│  │  │  │     ├─ models
+│  │  │  │     │  ├─ Chat.ts
+│  │  │  │     │  ├─ Room.ts
+│  │  │  │     │  └─ User.ts
+│  │  │  │     ├─ models.ts
+│  │  │  │     └─ query_engine-windows.dll.node
+│  │  │  └─ index.ts
+│  │  └─ tsconfig.json
+│  ├─ eslint-config
+│  │  ├─ base.js
+│  │  ├─ next.js
+│  │  ├─ package.json
+│  │  ├─ react-internal.js
+│  │  └─ README.md
+│  ├─ schema
+│  │  ├─ package.json
+│  │  ├─ src
+│  │  │  └─ user.ts
+│  │  └─ tsconfig.json
+│  ├─ typescript-config
+│  │  ├─ base.json
+│  │  ├─ nextjs.json
+│  │  ├─ package.json
+│  │  └─ react-library.json
+│  └─ ui
+│     ├─ eslint.config.mjs
+│     ├─ package.json
+│     ├─ src
+│     │  ├─ button.tsx
+│     │  ├─ card.tsx
+│     │  └─ code.tsx
+│     └─ tsconfig.json
+├─ pnpm-lock.yaml
+├─ pnpm-workspace.yaml
+├─ README.md
+└─ turbo.json
+
+```
