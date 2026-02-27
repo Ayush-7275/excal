@@ -4,6 +4,8 @@ import { prismaClient } from '@repo/db/client';
 import { authMiddleware } from './middleware.js';
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
 const app = express();
@@ -75,7 +77,13 @@ app.post('/signin', async (req: Request, res: Response) => {
       return res.status(403).json({ message: 'Incorrect Passwd' });
     }
     //Token generation
-    const token = jwt.sign(user.id, JWT_SECRET);
+    console.log('EXPRESS SECRET:', process.env.JWT_SECRET, '| LENGTH:', process.env.JWT_SECRET?.length);
+    const token = jwt.sign(
+      {
+        userId: user.id
+      },
+      JWT_SECRET
+    );
 
     res.status(200).json({
       message: 'Sigin Successfull',
@@ -88,10 +96,10 @@ app.post('/signin', async (req: Request, res: Response) => {
   }
 });
 
-app.post('/room', authMiddleware,async (req: Request, res: Response) => {
+app.post('/room', authMiddleware, async (req: Request, res: Response) => {
   const result = createRoomSchema.safeParse(req.body);
   const userId = req.userId as string;
-  
+
   if (!result.success) {
     return res.status(403).json({
       message: 'Invalid Input'
@@ -107,15 +115,31 @@ app.post('/room', authMiddleware,async (req: Request, res: Response) => {
     });
 
     res.status(200).json({
-      "message" : "Room created",
-      "roomid" : room.id
-    })
-
+      message: 'Room created',
+      roomid: room.id
+    });
   } catch (e) {
     res.status(400).json({
-      "error" : e
-    })
+      error: e
+    });
   }
+});
+
+app.get('/chats/:roomId', async (req: Request, res: Response) => {
+  const roomId = Number(req.params.roomId);
+  const messages = await prismaClient.chat.findMany({
+    where: {
+      roomId: roomId
+    },
+    orderBy: {
+      id: 'desc'
+    },
+    take: 50
+  });
+
+  res.status(200).json({
+    messages
+  })
 });
 
 app.listen(3001);
