@@ -134,6 +134,7 @@ Learn more about the power of Turborepo:
 - [Configuration Options](https://turborepo.dev/docs/reference/configuration)
 - [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
 
+
 ```
 excal
 ├─ .npmrc
@@ -148,18 +149,16 @@ excal
 │  │  └─ tsconfig.json
 │  ├─ web
 │  │  ├─ app
-│  │  │  ├─ favicon.ico
-│  │  │  ├─ fonts
-│  │  │  │  ├─ GeistMonoVF.woff
-│  │  │  │  └─ GeistVF.woff
 │  │  │  ├─ globals.css
 │  │  │  ├─ layout.tsx
-│  │  │  ├─ page.module.css
-│  │  │  └─ page.tsx
+│  │  │  ├─ page.tsx
+│  │  │  └─ signup
+│  │  │     └─ page.tsx
 │  │  ├─ eslint.config.js
 │  │  ├─ next-env.d.ts
 │  │  ├─ next.config.js
 │  │  ├─ package.json
+│  │  ├─ postcss.config.ts
 │  │  ├─ public
 │  │  │  ├─ file-text.svg
 │  │  │  ├─ globe.svg
@@ -169,6 +168,7 @@ excal
 │  │  │  ├─ vercel.svg
 │  │  │  └─ window.svg
 │  │  ├─ README.md
+│  │  ├─ tailwind.config.ts
 │  │  └─ tsconfig.json
 │  └─ ws-server
 │     ├─ package.json
@@ -184,6 +184,8 @@ excal
 │  │  │  │  ├─ 20260223165204_init_schema
 │  │  │  │  │  └─ migration.sql
 │  │  │  │  ├─ 20260223171942_unique_email
+│  │  │  │  │  └─ migration.sql
+│  │  │  │  ├─ 20260227163013_changed
 │  │  │  │  │  └─ migration.sql
 │  │  │  │  └─ migration_lock.toml
 │  │  │  └─ schema.prisma
@@ -218,6 +220,9 @@ excal
 │  │  ├─ src
 │  │  │  └─ user.ts
 │  │  └─ tsconfig.json
+│  ├─ tailwind-config
+│  │  ├─ package.json
+│  │  └─ tailwind.config.ts
 │  ├─ typescript-config
 │  │  ├─ base.json
 │  │  ├─ nextjs.json

@@ -1,0 +1,17 @@
+{
+  "name": "@repo/tailwind-config",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {},
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "tailwindcss": "^4.2.1"
+  },
+  "exports":{
+    ".": "./tailwind.config.ts"
+  }
+}

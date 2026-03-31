@@ -142,5 +142,23 @@ app.get('/chats/:roomId', async (req: Request, res: Response) => {
   })
 });
 
+app.get('/chats/:slug', async (req: Request, res: Response) => {
+  const slug = req.params.slug;
+  if(typeof(slug) != 'string'){
+    return res.json({
+      'message' : 'param is not string'
+    });
+  }
+  const messages = await prismaClient.room.findFirst({
+    where: {
+      slug
+    }
+  });
+
+  res.status(200).json({
+    messages
+  })
+});
+
 app.listen(3001);
 console.log('http server is running');
