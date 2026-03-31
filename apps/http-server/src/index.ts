@@ -139,25 +139,25 @@ app.get('/chats/:roomId', async (req: Request, res: Response) => {
 
   res.status(200).json({
     messages
-  })
+  });
 });
 
 app.get('/chats/:slug', async (req: Request, res: Response) => {
   const slug = req.params.slug;
-  if(typeof(slug) != 'string'){
+  if (typeof slug != 'string') {
     return res.json({
-      'message' : 'param is not string'
+      message: 'param is not string'
     });
   }
-  const messages = await prismaClient.room.findFirst({
+  const room = await prismaClient.room.findFirst({
     where: {
       slug
     }
   });
 
   res.status(200).json({
-    messages
-  })
+    room
+  });
 });
 
 app.listen(3001);
