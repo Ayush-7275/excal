@@ -14,11 +14,11 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
       });
     }
     //hamne userid ko token me banaya tha in signin endpoint
-    const decodedUserId = jwt.verify(token, JWT_SECRET) as string;
+    const decoded = jwt.verify(token, JWT_SECRET) as {userId : string};
 
-    if (decodedUserId) {
-      req.userId = decodedUserId;
-      // console.log(req.userId);
+    if (decoded) {
+      req.userId = decoded.userId;
+      console.log(req.userId);
       next();
     }
   } catch (err) {
