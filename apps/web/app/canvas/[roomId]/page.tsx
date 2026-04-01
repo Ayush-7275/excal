@@ -1,91 +1,40 @@
-'use client';
-import Konva from 'konva';
-import { useRef, useState } from 'react';
-import { Stage, Layer, Rect } from 'react-konva';
+import { HTTP_BACKEND } from '../../../config';
+import { DrawShape } from '../../../types/canvas';
+import { Canvas } from '../../../components/Canvas';
+// Fetching logic lives outside the client component now
 
-interface DrawnRect {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-}
+const getExistingShapes = async (roomId: number): Promise<DrawShape[]> => {
+  try {
+    const res = await fetch(`${HTTP_BACKEND}/chats/${roomId}`);
 
-export default function Canvas() {
-  const stageRef = useRef<Konva.Stage>(null);
-
-  // useRef for drag state — doesn't need to trigger re-renders
-  const isDrawing = useRef(false);
-  const startPos = useRef({ x: 0, y: 0 });
-
-  // useState for things that DO need to trigger re-renders
-  const [rects, setRects] = useState<DrawnRect[]>([]);
-  const [preview, setPreview] = useState<DrawnRect | null>(null);
-
-  const handleMouseDown = () => {
-    const pos = stageRef.current?.getPointerPosition();
-    if (!pos) return;
-
-    isDrawing.current = true;
-    startPos.current = pos;
-    setPreview({ x: pos.x, y: pos.y, width: 0, height: 0 });
-  };
-
-  const handleMouseMove = () => {
-    if (!isDrawing.current) return;
-    const pos = stageRef.current?.getPointerPosition();
-    if (!pos) return;
-
-    // Calculate rect from start to current pointer
-    setPreview({
-      //math.min kyuki agar left drag kare to left mei rectangle bane na ki right mei
-      x: Math.min(pos.x, startPos.current.x),
-      y: Math.min(pos.y, startPos.current.y),
-      width: Math.abs(pos.x - startPos.current.x),
-      height: Math.abs(pos.y - startPos.current.y)
-    });
-  };
-
-  const handleMouseUp = () => {
-    if (!isDrawing.current || !preview) return;
-
-    isDrawing.current = false;
-
-    // Only save if it has some size
-    if (preview.width > 2 && preview.height > 2) {
-      setRects((prev) => [...prev, preview]);
+    if (!res.ok) {
+      throw new Error(`Server responded with status: ${res.status}`);
     }
 
-    setPreview(null);
+    const data = await res.json();
+    return data.messages.map((x: { message: string }) => JSON.parse(x.message));
+
+  } catch (error) {
+    console.error('Failed to fetch shapes', error);
+    return []; // Return empty array on failure so the canvas still loads
+  }
+};
+
+// This can be async because it is a Server Component!
+export default async function CanvasPage({
+  params
+}: {
+  params: {
+    roomId: number;
   };
+}) {
+  const roomId = (await params).roomId; 
+  const initialShapes = await getExistingShapes(roomId);
 
   return (
-    <Stage
-      height={1000}
-      width={1000}
-      ref={stageRef}
-      onMouseDown={handleMouseDown}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-      style={{ background: '#121212' }}
-    >
-      <Layer>
-        {/* Permanent rects */}
-        {rects.map((rect, i) => (
-          <Rect key={i} x={rect.x} y={rect.y} width={rect.width} height={rect.height} stroke='white'/>
-        ))}
-
-        {/* Live preview while dragging */}
-        {preview && (
-          <Rect
-            x={preview.x}
-            y={preview.y}
-            width={preview.width}
-            height={preview.height}
-            stroke='white'
-            dash={[4, 4]} // dashed border to show it's a preview
-          />
-        )}
-      </Layer>
-    </Stage>
+    <main style={{ width: '100vw', height: '100vh', overflow: 'hidden' }}>
+      {/* Pass the fetched data down as props */}
+      <Canvas initialShapes={initialShapes} roomId='' token=''/>//NEED FIX
+    </main>
   );
 }
