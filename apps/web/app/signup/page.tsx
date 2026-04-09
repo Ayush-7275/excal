@@ -1,4 +1,22 @@
+'use client';
+
+import { useRef } from 'react';
+import { useSignup } from '../../hooks/useSignup';
+
 const Signup = () => {
+  const usernameRef = useRef<HTMLInputElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
+
+  const { signup, isLoading } = useSignup();
+
+  const handleSubmit = () => {
+    const username = usernameRef.current?.value || '';
+    const email = emailRef.current?.value || '';
+    const password = passwordRef.current?.value || '';
+    signup({ username, email, password });
+  };
+
   return (
     <>
       <div>
@@ -21,21 +39,24 @@ const Signup = () => {
               {/* input box and button */}
               <div className='flex flex-col gap-4 mt-4'>
                 <input
+                  ref={usernameRef}
                   className='border border-white/25 rounded-xl p-2 text-white/80'
                   placeholder='Enter Username'
                   type='text'
                 />
                 <input
+                ref={emailRef}
                   className='border border-white/25 rounded-xl p-2 text-white/80'
                   placeholder='Enter Email'
                   type='email'
                 />
                 <input
+                ref={passwordRef}
                   className='border border-white/25 rounded-xl p-2 text-white/80'
                   placeholder='Enter Password'
                   type='password'
                 />
-                <button className='bg-primary mt-2 p-3 rounded-xl text-neutral font-body font-bold hover:cursor-pointer hover:-translate-y-1 transition-all'>
+                <button onClick={handleSubmit} className='bg-primary mt-2 p-3 rounded-xl text-neutral font-body font-bold hover:cursor-pointer hover:-translate-y-1 transition-all'>
                   Create Account
                 </button>
                 <p className='text-white/80'>

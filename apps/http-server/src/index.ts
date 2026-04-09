@@ -5,12 +5,14 @@ import { authMiddleware } from './middleware.js';
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import cors from 'cors'
 dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
 const app = express();
 
 app.use(express.json());
+app.use(cors())
 
 app.post('/signup', async (req: Request, res: Response) => {
   const result = signupSchema.safeParse(req.body);
