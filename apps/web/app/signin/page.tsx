@@ -1,4 +1,19 @@
+"use client"
+import { useRef } from 'react';
+import { useSignin } from '../../hooks/useSignin';
+
 const Signin = () => {
+  const emailRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
+
+  const { error, isLoading, signIn } = useSignin();
+
+  const handleSubmit = () => {
+    const email = emailRef.current?.value || '';
+    const password = passwordRef.current?.value || '';
+    signIn({ email, password });
+  };
+
   return (
     <>
       <div className='bg-[#1D2438] w-full h-screen flex flex-col items-center'>
@@ -42,15 +57,20 @@ const Signin = () => {
                 <input
                   className='border border-white/25 rounded-xl p-2 text-white/80'
                   placeholder='Enter Email'
-                  type='email' 
+                  type='email'
+                  ref={emailRef}
                 />
                 <input
                   className='border border-white/25 rounded-xl p-2 text-white/80'
                   placeholder='Enter Password'
                   type='password'
+                  ref={passwordRef}
                 />
-                <button className='bg-primary mt-6 p-3 rounded-xl text-neutral font-body font-bold hover:cursor-pointer hover:-translate-y-1 transition-all'>
-                  Sign In
+                <button
+                  onClick={handleSubmit}
+                  className='bg-primary mt-6 p-3 rounded-xl text-neutral font-body font-bold hover:cursor-pointer hover:-translate-y-1 transition-all'
+                >
+                  {isLoading ? 'Sign In' : 'Signing in'}
                 </button>
                 <p className='text-white/80'>
                   Don't have a account{' '}

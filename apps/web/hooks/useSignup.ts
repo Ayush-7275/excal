@@ -29,7 +29,7 @@ export const useSignup = () => {
         throw new Error(data.message || 'signup failed');
       }
 
-      router.push('/sigin');
+      router.push('/signin');
     } catch (e: any) {
       console.error(e);
     } finally {
