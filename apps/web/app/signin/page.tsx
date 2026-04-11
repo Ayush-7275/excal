@@ -53,7 +53,7 @@ const Signin = () => {
               <p className='text-3xl font-bold text-[#DAE2FD] font-heading'>Sign In</p>
               <p className='mt-4 text-lg  text-[#DAE2FD] font-body'>Welcome back to your workspace..</p>
               {/* input box and button */}
-              <div className='flex flex-col gap-8 mt-10'>
+              <div className='flex flex-col gap-6 mt-10'>
                 <input
                   className='border border-white/25 rounded-xl p-2 text-white/80'
                   placeholder='Enter Email'
@@ -68,14 +68,14 @@ const Signin = () => {
                 />
                 <button
                   onClick={handleSubmit}
-                  className='bg-primary mt-6 p-3 rounded-xl text-neutral font-body font-bold hover:cursor-pointer hover:-translate-y-1 transition-all'
+                  className='bg-primary mt-4 p-3 rounded-xl text-neutral font-body font-bold hover:cursor-pointer hover:-translate-y-1 transition-all'
                 >
-                  {isLoading ? 'Sign In' : 'Signing in'}
+                  {!isLoading ? 'Sign In' : 'Signing in'}
                 </button>
                 <p className='text-white/80'>
                   Don't have a account{' '}
                   <span>
-                    <button className='text-primary hover:cursor-pointer underline'>Sign up</button>
+                    <button  className='text-primary hover:cursor-pointer underline'>Sign up</button>
                   </span>
                 </p>
               </div>

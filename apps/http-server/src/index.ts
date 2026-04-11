@@ -5,14 +5,14 @@ import { authMiddleware } from './middleware.js';
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import cors from 'cors'
+import cors from 'cors';
 dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
 const app = express();
 
 app.use(express.json());
-app.use(cors())
+app.use(cors());
 
 app.post('/signup', async (req: Request, res: Response) => {
   const result = signupSchema.safeParse(req.body);
@@ -124,6 +124,54 @@ app.post('/room', authMiddleware, async (req: Request, res: Response) => {
     res.status(400).json({
       error: e
     });
+  }
+});
+
+app.get('/rooms', authMiddleware, async (req: Request, res: Response) => {
+  const userId = req.userId as string;
+  try {
+    const rooms = await prismaClient.room.findMany({
+      where: { adminId: userId },
+      orderBy: { id: 'desc' } // Shows newest rooms first
+    });
+    res.status(200).json({ rooms });
+  } catch (e) {
+    res.status(500).json({ error: 'Failed to fetch rooms' });
+  }
+});
+
+app.delete('/room/:roomId', authMiddleware, async (req: Request, res: Response) => {
+  const userId = req.userId as string;
+  const roomId = Number(req.params.roomId);
+
+  if (isNaN(roomId)) {
+    return res.status(400).json({ message: "Invalid Room ID" });
+  }
+
+  try {
+    // 1. Verify the user actually owns this room
+    const room = await prismaClient.room.findFirst({
+      where: { id: roomId, adminId: userId }
+    });
+
+    if (!room) {
+      return res.status(403).json({ message: "Not authorized to delete this room" });
+    }
+
+    // 🚨 THE FIX: Delete all chats inside the room first!
+    await prismaClient.chat.deleteMany({
+      where: { roomId: roomId }
+    });
+
+    // 2. Now it is safe to delete the empty room
+    await prismaClient.room.delete({
+      where: { id: roomId }
+    });
+
+    res.status(200).json({ message: "Room deleted successfully" });
+  } catch (e) {
+    console.error("Delete room error:", e); // This will log the exact reason if it fails again
+    res.status(500).json({ message: "Failed to delete room" });
   }
 });
 

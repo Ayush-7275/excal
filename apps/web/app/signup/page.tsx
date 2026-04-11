@@ -2,11 +2,15 @@
 
 import { useRef } from 'react';
 import { useSignup } from '../../hooks/useSignup';
+import { useRouter } from 'next/navigation';
+
 
 const Signup = () => {
   const usernameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
+
+  const router = useRouter()
 
   const { signup, isLoading } = useSignup();
 
@@ -62,7 +66,7 @@ const Signup = () => {
                 <p className='text-white/80'>
                   Already have an account?{' '}
                   <span>
-                    <button className='text-primary hover:cursor-pointer underline'>Sign in</button>
+                    <button onClick={()=>router.push('/signin')} className='text-primary hover:cursor-pointer underline'>Sign in</button>
                   </span>
                 </p>
               </div>

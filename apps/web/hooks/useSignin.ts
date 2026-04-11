@@ -34,7 +34,7 @@ export const useSignin = () => {
       const token = data.token;
       localStorage.setItem('token', token);
 
-      router.push('/');
+      router.push('/dashboard');
     } catch (e: any) {
       console.error(e);
       setError(e);
