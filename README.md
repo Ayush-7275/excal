@@ -177,7 +177,7 @@ pnpm typecheck # TypeScript check across the monorepo
 ## 👤 Author
 
 **Ayushman Rai**
-[LinkedIn]([YOUR LINKEDIN]) · [GitHub]([YOUR GITHUB]) · ayushman.23bsa10023@vitbhopal.ac.in
+ayushman.23bsa10023@vitbhopal.ac.in
 
 ---
 
