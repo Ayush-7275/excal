@@ -1,244 +1,186 @@
-# Turborepo starter
+# ExcaliCollab
 
-This Turborepo starter is maintained by the Turborepo core team.
+A real-time collaborative whiteboard application built with a hybrid HTTP + WebSocket architecture, structured as a monorepo using Turborepo.
 
-## Using this example
+> Draw together. In real time. With anyone.
 
-Run the following command:
+---
 
-```sh
-npx create-turbo@latest
-```
+## ✨ Features
 
-## What's inside?
+- 🎨 **Real-time collaboration** — sub-100ms multi-user canvas synchronization
+- 🔌 **Hybrid communication layer** — HTTP for session & state, WebSockets for live drawing events
+- 🔐 **Authentication** — Secure user sign-up/sign-in with session management
+- 🗄️ **Persistent canvas state** — Canvas data survives disconnections and page refreshes
+- 📦 **Monorepo architecture** — Modular, scalable structure via Turborepo + pnpm workspaces
 
-This Turborepo includes the following packages/apps:
+---
 
-### Apps and Packages
+## 🏗️ Tech Stack
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+| Layer | Technology |
+|---|---|
+| Frontend | Next.js, React, Tailwind CSS |
+| HTTP Backend | Node.js, Express.js, TypeScript |
+| WebSocket Server | Node.js, WebSockets, TypeScript |
+| Database | PostgreSQL via Prisma ORM |
+| Monorepo | Turborepo, pnpm workspaces |
+| Language | TypeScript (throughout) |
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+---
 
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
+## 📁 Project Structure
 
 ```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
+excal/
+├── apps/
+│   ├── web/              # Next.js frontend (canvas UI, auth pages)
+│   ├── http-server/      # Express REST API (sessions, canvas persistence)
+│   └── ws-server/        # WebSocket server (live drawing broadcast)
+│
+├── packages/
+│   ├── db/               # Prisma schema, migrations, generated client
+│   ├── ui/               # Shared UI components (Button, Card, Code)
+│   ├── schema/           # Shared Zod/validation schemas
+│   ├── tailwind-config/  # Shared Tailwind configuration
+│   ├── typescript-config/# Shared tsconfig presets
+│   └── eslint-config/    # Shared ESLint rules
+│
+├── turbo.json            # Turborepo pipeline config
+├── pnpm-workspace.yaml   # pnpm workspace definition
+└── package.json
 ```
 
-You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+---
+
+## ⚙️ Architecture
+
+ExcaliCollab uses a **hybrid HTTP + WebSocket communication model**:
 
 ```
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
+Client
+  │
+  ├── HTTP  ──▶  http-server  ──▶  PostgreSQL
+  │              (session init, canvas state persistence)
+  │
+  └── WS    ──▶  ws-server
+                 (live drawing event broadcast to all connected clients)
 ```
 
-### Develop
+- **HTTP layer** handles everything stateful — user auth, session creation, and saving/loading canvas snapshots. This ensures a reconnecting user always restores the correct canvas state.
+- **WebSocket layer** is purely real-time — it broadcasts drawing events to all connected clients with minimal latency. No state is stored here.
 
-To develop all apps and packages, run the following command:
+This separation eliminates race conditions that arise when a single layer tries to handle both real-time sync and persistence.
 
-```
-cd my-turborepo
+---
 
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev
+## 🗄️ Database Schema
 
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
-```
+Managed via **Prisma ORM** with PostgreSQL.
 
-You can develop a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+Key models:
+- `User` — stores user credentials and identity
+- `Room` — represents a collaborative canvas session
+- `Chat` — stores messages within a room (if chat feature is enabled)
 
-```
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
+Migrations are tracked under `packages/db/prisma/migrations/`.
 
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-```
+---
 
-### Remote Caching
+## 🚀 Getting Started
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
+### Prerequisites
 
-Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
+- Node.js `>= 18`
+- pnpm `>= 8`
+- PostgreSQL instance running
 
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
+### Installation
 
-```
-cd my-turborepo
+```bash
+# Clone the repo
+git clone https://github.com/[YOUR_USERNAME]/excal.git
+cd excal
 
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo login
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
+# Install dependencies
+pnpm install
 ```
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+### Environment Variables
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+Create `.env` files in the relevant apps:
 
-```
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo link
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
+**`apps/http-server/.env`**
+```env
+DATABASE_URL=postgresql://user:password@localhost:5432/excaldb
+JWT_SECRET=your_jwt_secret
+PORT=3001
 ```
 
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
-- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
-
-
+**`apps/ws-server/.env`**
+```env
+WS_PORT=3002
 ```
-excal
-├─ .npmrc
-├─ apps
-│  ├─ http-server
-│  │  ├─ package.json
-│  │  ├─ src
-│  │  │  ├─ index.ts
-│  │  │  ├─ middleware.ts
-│  │  │  └─ types
-│  │  │     └─ express.d.ts
-│  │  └─ tsconfig.json
-│  ├─ web
-│  │  ├─ app
-│  │  │  ├─ globals.css
-│  │  │  ├─ layout.tsx
-│  │  │  ├─ page.tsx
-│  │  │  └─ signup
-│  │  │     └─ page.tsx
-│  │  ├─ eslint.config.js
-│  │  ├─ next-env.d.ts
-│  │  ├─ next.config.js
-│  │  ├─ package.json
-│  │  ├─ postcss.config.ts
-│  │  ├─ public
-│  │  │  ├─ file-text.svg
-│  │  │  ├─ globe.svg
-│  │  │  ├─ next.svg
-│  │  │  ├─ turborepo-dark.svg
-│  │  │  ├─ turborepo-light.svg
-│  │  │  ├─ vercel.svg
-│  │  │  └─ window.svg
-│  │  ├─ README.md
-│  │  ├─ tailwind.config.ts
-│  │  └─ tsconfig.json
-│  └─ ws-server
-│     ├─ package.json
-│     ├─ src
-│     │  └─ index.ts
-│     └─ tsconfig.json
-├─ package.json
-├─ packages
-│  ├─ db
-│  │  ├─ package.json
-│  │  ├─ prisma
-│  │  │  ├─ migrations
-│  │  │  │  ├─ 20260223165204_init_schema
-│  │  │  │  │  └─ migration.sql
-│  │  │  │  ├─ 20260223171942_unique_email
-│  │  │  │  │  └─ migration.sql
-│  │  │  │  ├─ 20260227163013_changed
-│  │  │  │  │  └─ migration.sql
-│  │  │  │  └─ migration_lock.toml
-│  │  │  └─ schema.prisma
-│  │  ├─ prisma.config.ts
-│  │  ├─ src
-│  │  │  ├─ generated
-│  │  │  │  └─ prisma
-│  │  │  │     ├─ browser.ts
-│  │  │  │     ├─ client.ts
-│  │  │  │     ├─ commonInputTypes.ts
-│  │  │  │     ├─ enums.ts
-│  │  │  │     ├─ internal
-│  │  │  │     │  ├─ class.ts
-│  │  │  │     │  ├─ prismaNamespace.ts
-│  │  │  │     │  └─ prismaNamespaceBrowser.ts
-│  │  │  │     ├─ models
-│  │  │  │     │  ├─ Chat.ts
-│  │  │  │     │  ├─ Room.ts
-│  │  │  │     │  └─ User.ts
-│  │  │  │     ├─ models.ts
-│  │  │  │     └─ query_engine-windows.dll.node
-│  │  │  └─ index.ts
-│  │  └─ tsconfig.json
-│  ├─ eslint-config
-│  │  ├─ base.js
-│  │  ├─ next.js
-│  │  ├─ package.json
-│  │  ├─ react-internal.js
-│  │  └─ README.md
-│  ├─ schema
-│  │  ├─ package.json
-│  │  ├─ src
-│  │  │  └─ user.ts
-│  │  └─ tsconfig.json
-│  ├─ tailwind-config
-│  │  ├─ package.json
-│  │  └─ tailwind.config.ts
-│  ├─ typescript-config
-│  │  ├─ base.json
-│  │  ├─ nextjs.json
-│  │  ├─ package.json
-│  │  └─ react-library.json
-│  └─ ui
-│     ├─ eslint.config.mjs
-│     ├─ package.json
-│     ├─ src
-│     │  ├─ button.tsx
-│     │  ├─ card.tsx
-│     │  └─ code.tsx
-│     └─ tsconfig.json
-├─ pnpm-lock.yaml
-├─ pnpm-workspace.yaml
-├─ README.md
-└─ turbo.json
 
+**`apps/web/.env.local`**
+```env
+NEXT_PUBLIC_HTTP_URL=http://localhost:3001
+NEXT_PUBLIC_WS_URL=ws://localhost:3002
 ```
+
+### Database Setup
+
+```bash
+# Run Prisma migrations
+cd packages/db
+pnpm prisma migrate dev
+```
+
+### Running the App
+
+```bash
+# From the root — runs all apps in parallel via Turborepo
+pnpm dev
+```
+
+| App | URL |
+|---|---|
+| Web (Next.js) | http://localhost:3000 |
+| HTTP Server | http://localhost:3001 |
+| WebSocket Server | ws://localhost:3002 |
+
+---
+
+## 📜 Scripts
+
+From the root:
+
+```bash
+pnpm dev       # Start all apps in development mode
+pnpm build     # Build all apps and packages
+pnpm lint      # Lint all packages
+pnpm typecheck # TypeScript check across the monorepo
+```
+
+---
+
+## 🛣️ Roadmap
+
+- [ ] Shape tools (rectangle, circle, arrow)
+- [ ] Export canvas as PNG/SVG
+- [ ] Room sharing via invite link
+- [ ] Cursor presence (see where others are drawing)
+- [ ] Undo/redo support
+
+---
+
+## 👤 Author
+
+**Ayushman Rai**
+[LinkedIn]([YOUR LINKEDIN]) · [GitHub]([YOUR GITHUB]) · ayushman.23bsa10023@vitbhopal.ac.in
+
+---
+
+## 📄 License
+
+MIT License — feel free to use, fork, and build on this.
