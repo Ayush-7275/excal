@@ -2,7 +2,7 @@
 
 A real-time collaborative whiteboard application built with a hybrid HTTP + WebSocket architecture, structured as a monorepo using Turborepo.
 
-> Draw together. In real time. With anyone.
+> Draw together. In real time. With anyone .
 
 ---
 
